@@ -6,7 +6,7 @@ A personal project to explore visualizing math using C and SDL2
 ### General Info
 ***
 This is a casual project I'm working on to work with different areas of mathematics, computer science, and graphics programming. It uses SDL2 under the hood for graphics and is potentially needlessly complicated, running the graphics part in a separate thread.
-## Use
+### Use
 ***
 Simply compile and run.
 ```
