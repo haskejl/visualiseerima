@@ -8,14 +8,14 @@ int graphicsHandler(void *arg) {
 	struct GraphicsDat *gd = (struct GraphicsDat*)arg;
 	
 	// Initialize Graphics
-	printf("Initializing video...\n");
+	//printf("Initializing video...\n");
 	int ret_val = SDL_Init(SDL_INIT_VIDEO);
 	if(ret_val < 0) {
 		printf("SDL failed to initialize! %s\n", SDL_GetError());
 		return ret_val;
 	}
 	
-	window = SDL_CreateWindow("Math-Viz", 0,0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Visualiseerima", 0,0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
 	if(window == NULL) {
 		printf("SDL failed to create window! %s\n", SDL_GetError());
@@ -53,6 +53,7 @@ int graphicsHandler(void *arg) {
 
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 			drawGraph(gd->g, gd->pX, gd->pY, gd->nVals);
+			if(gd->hasLRModel) drawLinearRegression(gd);
 			SDL_RenderPresent(renderer);
 		}
 		else SDL_Delay(100);
@@ -79,6 +80,15 @@ void drawSolidRect(const SDL_Rect* rect, const int r, const int g, const int b, 
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 	SDL_RenderDrawRect(renderer, rect);
 	SDL_RenderFillRect(renderer, rect);
+}
+
+void drawLinearRegression(struct GraphicsDat *pGD) {
+	//Just draw from 0 to the max on the x axis
+	SDL_SetRenderDrawColor(renderer, 255, 100, 100, 255);
+	SDL_RenderDrawLine(renderer, pGD->g.x_offset, (int)(pGD->g.y_offset-pGD->alpha/pGD->g.y_scale),
+						pGD->g.x_pos+pGD->g.width, 
+						(int)(pGD->g.y_offset-(pGD->alpha + pGD->beta*pGD->g.x_max)/pGD->g.y_scale));
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
 // Graph an object, assumes x_min and y_min are negative

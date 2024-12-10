@@ -14,6 +14,9 @@ struct GraphicsDat {
     int nVals;
     float *pX, *pY;
     bool pause, quit;
+    //Hacky way to include regression model
+    bool hasLRModel;
+    float alpha, beta;
 };
 
 //Constants
@@ -30,6 +33,7 @@ int graphicsHandler(void *arg);
 
 void drawPoint(const int x, const int y, const int size, const int r, const int g, const int b, const int a);
 void drawSolidRect(const SDL_Rect* rect, const int r, const int g, const int b, const int a);
+void drawLinearRegression(struct GraphicsDat *pGD);
 
 // Graph an object, assumes x_min and y_min are negative
 void drawGraph(const struct Graph g, const float* x_vals, const float* y_vals, const int n_vals);
