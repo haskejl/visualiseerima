@@ -83,11 +83,29 @@ void drawSolidRect(const SDL_Rect* rect, const int r, const int g, const int b, 
 }
 
 void drawLinearRegression(struct GraphicsDat *pGD) {
+	//Find out where the line intersects the graph min and max
+	// y = alpha + beta * x
+	float xMin = pGD->g.x_min;
+	float yMin = pGD->alpha + pGD->beta * xMin;
+	// If point is off the graph, switch the formula
+	if(yMin < pGD->g.y_min) {
+		yMin = pGD->g.y_min;
+		xMin = (yMin-pGD->alpha)/pGD->beta;	
+	}
+
+	float xMax = pGD->g.x_max;
+	float yMax = pGD->alpha + pGD->beta * xMax;
+	if(yMax > pGD->g.y_max) {
+		yMax = pGD->g.y_max;
+		xMax = (yMax-pGD->alpha)/pGD->beta;
+	}
 	//Just draw from 0 to the max on the x axis
 	SDL_SetRenderDrawColor(renderer, 255, 100, 100, 255);
-	SDL_RenderDrawLine(renderer, pGD->g.x_offset, (int)(pGD->g.y_offset-pGD->alpha/pGD->g.y_scale),
-						pGD->g.x_pos+pGD->g.width, 
-						(int)(pGD->g.y_offset-(pGD->alpha + pGD->beta*pGD->g.x_max)/pGD->g.y_scale));
+	SDL_RenderDrawLine(renderer, 
+						(int)(pGD->g.x_offset+xMin/pGD->g.x_scale), 
+						(int)(pGD->g.y_offset-yMin/pGD->g.y_scale),
+						(int)(pGD->g.x_offset+xMax/pGD->g.x_scale), 
+						(int)(pGD->g.y_offset-yMax/pGD->g.y_scale));
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 

@@ -12,23 +12,27 @@
 
 int main(int argc, char* argv[]) {
 	int nLines = 100;
+
+	char cmd[10];
 	float pX[nLines];
 	float pY[nLines];
+	thrd_t t[1];
+
+	struct GraphicsDat gd;
+
 	for(int i=0; i<nLines; i++) {
 		pX[i] = 0.0;
 		pY[i] = 0.0;
 	}
 
-	struct GraphicsDat gd;
 	gd.g.x_max = 100;
-	gd.g.x_min = -1;
+	gd.g.x_min = -10;
 	gd.g.y_max = 100;
-	gd.g.y_min = -1;
+	gd.g.y_min = -10;
 	gd.g.x_pos = 100;
 	gd.g.y_pos = 100;
 	gd.g.width = 800;
 	gd.g.height = 800;
-	recalcGraphParams(&gd.g);
 	gd.pause = false;
 	gd.pX = pX;
 	gd.pY = pY;
@@ -36,10 +40,9 @@ int main(int argc, char* argv[]) {
 	gd.alpha = 0.0;
 	gd.hasLRModel = false;
 
-	thrd_t t[1];
-	thrd_create(t, graphicsHandler, &gd);
+	recalcGraphParams(&gd.g);
 
-	char cmd[100];
+	thrd_create(t, graphicsHandler, &gd);
 
 	while(strcmp(cmd, "quit") != 0) {
 		if(strcmp(cmd, "read") == 0) {
@@ -52,9 +55,12 @@ int main(int argc, char* argv[]) {
 			float slope = (float)rand()/(float)RAND_MAX * 2.f;
 			float y_int = rand() % 10;
 			for(int i=0; i<nLines; i++) {
-				pX[i] = 5.0 + (float)(rand()%95) + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
-				pY[i] = y_int + slope * pX[i] + ((float)rand()/(float)RAND_MAX - 0.5)*9.5;
+				pX[i] = (float)(rand()%95) +
+				 ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
+				pY[i] = y_int + slope * pX[i] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
+				if(pY[i] > 100) i--;
 			}
+			gd.nVals = nLines;
 			gd.hasLRModel = false;
 		}
 		else if(strcmp(cmd, "slr") == 0) {
@@ -81,10 +87,14 @@ int main(int argc, char* argv[]) {
 			printf("generate:\tgenerate new data\n");
 			printf("slr:\t\tmake a simple linear regression model on the data\n");
 			printf("pause/unpause:\tpauses or unpauses the graph\n");
-			printf("clear:\t\tclears the screen\n");
+			printf("clear:\t\tclears the console\n");
 		}
 		printf("> ");
-		scanf("%s", cmd);
+		scanf("%9s", cmd);
+		int c = getchar();
+		while(c != '\n' && c != EOF) {
+			c = getchar();
+		}
 	}
 	gd.quit = true;
 	int res;
