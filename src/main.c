@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
 			printf("slr:\t\tmake a simple linear regression model on the data\n");
 			printf("pause/unpause:\tpauses or unpauses the graph\n");
 			printf("clear:\t\tclears the console\n");
+			printf("quit:\t\tquits the program\n");
 		}
 		printf("> ");
 		scanf("%9s", cmd);
