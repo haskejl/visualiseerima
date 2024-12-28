@@ -6,8 +6,8 @@
 
 //Structs
 struct Graph {
-    float x_min, x_max, y_min, y_max, x_offset, y_offset, x_scale, y_scale;
-    int x_pos, y_pos, width, height;
+    float xMin, xMax, yMin, yMax, xOffset, yOffset, xScale, yScale;
+    int xPos, yPos, width, height;
 };
 struct GraphicsDat {
     struct Graph g;
@@ -35,7 +35,7 @@ void drawPoint(const int x, const int y, const int size, const int r, const int 
 void drawSolidRect(const SDL_Rect* rect, const int r, const int g, const int b, const int a);
 void drawLinearRegression(struct GraphicsDat *pGD);
 
-// Graph an object, assumes x_min and y_min are negative
+// Graph an object, assumes xMin and yMin are negative
 void drawGraph(const struct Graph g, const float* x_vals, const float* y_vals, const int n_vals);
 void drawLineGraph(const struct Graph g, const float* x_vals, const float* y_vals, const int n_vals);
 

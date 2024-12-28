@@ -25,12 +25,12 @@ int main(int argc, char* argv[]) {
 		pY[i] = 0.0;
 	}
 
-	gd.g.x_max = 100;
-	gd.g.x_min = -10;
-	gd.g.y_max = 100;
-	gd.g.y_min = -10;
-	gd.g.x_pos = 100;
-	gd.g.y_pos = 100;
+	gd.g.xMax = 100;
+	gd.g.xMin = -10;
+	gd.g.yMax = 100;
+	gd.g.yMin = -10;
+	gd.g.xPos = 100;
+	gd.g.yPos = 100;
 	gd.g.width = 800;
 	gd.g.height = 800;
 	gd.pause = false;
@@ -53,11 +53,11 @@ int main(int argc, char* argv[]) {
 		}
 		else if(strcmp(cmd, "generate") == 0) {
 			float slope = (float)rand()/(float)RAND_MAX * 2.f;
-			float y_int = rand() % 10;
+			float yInt = rand() % 10;
 			for(int i=0; i<nLines; i++) {
 				pX[i] = (float)(rand()%95) +
 				 ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
-				pY[i] = y_int + slope * pX[i] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
+				pY[i] = yInt + slope * pX[i] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
 				if(pY[i] > 100) i--;
 			}
 			gd.nVals = nLines;
