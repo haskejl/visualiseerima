@@ -5,25 +5,33 @@
 #include <threads.h>
 
 #include <SDL2/SDL.h>
+#include <time.h>
 
 #include "../include/filehandler.h"
 #include "../include/graphics.h"
 #include "../include/regression.h"
 
 int main(int argc, char* argv[]) {
+	srand(time(NULL));
 	int nLines = 100;
+	int n = nLines;
+	int p = 2;
+
+	float **pX = (float**)malloc(n*sizeof(float*));
+	float *pY = (float*)malloc(n*sizeof(float));
+	float *pBeta = (float*)malloc(n*sizeof(float));
+
+	for(int i=0; i<n; i++) {
+		pX[i] = (float*)malloc((p*sizeof(float)));
+		pX[i][0] = 1.0;
+	}
+
+	float pXSLR[nLines];
 
 	char cmd[10];
-	float pX[nLines];
-	float pY[nLines];
 	thrd_t t[1];
 
 	struct GraphicsDat gd;
-
-	for(int i=0; i<nLines; i++) {
-		pX[i] = 0.0;
-		pY[i] = 0.0;
-	}
 
 	gd.g.xMax = 100;
 	gd.g.xMin = -10;
@@ -34,7 +42,7 @@ int main(int argc, char* argv[]) {
 	gd.g.width = 800;
 	gd.g.height = 800;
 	gd.pause = false;
-	gd.pX = pX;
+	gd.pX = pXSLR;
 	gd.pY = pY;
 	gd.beta = 0.0;
 	gd.alpha = 0.0;
@@ -46,24 +54,25 @@ int main(int argc, char* argv[]) {
 
 	while(strcmp(cmd, "quit") != 0) {
 		if(strcmp(cmd, "read") == 0) {
-			readLines("test.csv", pY, pX, nLines);
+			readLines("test.csv", pY, pX[1], nLines);
 		}
 		else if(strcmp(cmd, "write") == 0) {
-			writeLines("test.csv", pY, pX, nLines);
+			writeLines("test.csv", pY, pX[1], nLines);
 		}
 		else if(strcmp(cmd, "generate") == 0) {
 			float slope = (float)rand()/(float)RAND_MAX * 2.f;
 			float yInt = rand() % 10;
 			for(int i=0; i<nLines; i++) {
-				pX[i] = (float)(rand()%95) +
+				pXSLR[i] = pX[i][1] = (float)(rand()%95) +
 				 ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
-				pY[i] = yInt + slope * pX[i] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
+				pY[i] = yInt + slope * pX[i][1] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
 				if(pY[i] > 100) i--;
 			}
 			gd.nVals = nLines;
 			gd.hasLRModel = false;
 		}
 		else if(strcmp(cmd, "slr") == 0) {
+			olsLinearRegression(pX, pY, n, p, pBeta);
 			simpleLinearRegression(gd.pX, gd.pY, nLines, &gd.beta, &gd.alpha);
 			gd.hasLRModel = true;
 		}
@@ -75,7 +84,7 @@ int main(int argc, char* argv[]) {
 		}
 		else if(strcmp(cmd, "print") == 0) {
 			for(int i=0; i<nLines; i++) {
-				printf("%f, %f\n", pY[i], pX[i]);
+				printf("%f, %f\n", pY[i], pX[i][1]);
 			}
 		}
 		else if(strcmp(cmd, "clear") == 0) {
@@ -100,4 +109,11 @@ int main(int argc, char* argv[]) {
 	gd.quit = true;
 	int res;
 	thrd_join(t[0], &res);
+	
+	for(int i=0; i<n; i++) {
+		free(pX[i]);
+	}
+	free(pX);
+	free(pY);
+	free(pBeta);
 }

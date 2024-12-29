@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -I$(IDIR)
 
 #OBJS specifies which files to compile as part of the project
-OBJS = ./src/main.c ./src/filehandler.c ./src/graphics.c
+OBJS = ./src/main.c ./src/filehandler.c ./src/graphics.c ./src/regression.c
 
 #linker flags
 LINKER_FLAGS = -lm -lSDL2 -lSDL2_ttf
