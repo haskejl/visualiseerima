@@ -31,8 +31,6 @@ static SDL_Texture* texture = NULL;
 //Start external graphics libraries central to the program, return 0 if all are successfully started
 int graphicsHandler(void *arg);
 
-void drawPoint(const int x, const int y, const int size, const int r, const int g, const int b, const int a);
-void drawSolidRect(const SDL_Rect* rect, const int r, const int g, const int b, const int a);
 void drawLinearRegression(struct GraphicsDat *pGD);
 
 // Graph an object, assumes xMin and yMin are negative
