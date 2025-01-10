@@ -153,8 +153,16 @@ void drawLineGraph(const struct Graph g, const float* xVals, const float* yVals,
 }
 
 void recalcGraphParams(struct Graph* g) {
-	g->xOffset = g->xPos+(g->xMin/(g->xMin-g->xMax)*g->width);
-	g->yOffset = g->yPos+(g->yMax/(g->yMax-g->yMin)*g->height);
+	if(g->xMin < 0) {
+		g->xOffset = g->xPos+(g->xMin/(g->xMin-g->xMax)*g->width);
+	} else {
+		g->xOffset = g->xPos+(g->xMin/(g->xMax-g->xMin)*g->width);
+	}
+	if(g->yMax > 0) {
+		g->yOffset = g->yPos+(g->yMax/(g->yMax-g->yMin)*g->height);
+	} else {
+		g->yOffset = g->yPos+(g->yMax/(g->yMin-g->yMax)*g->height);
+	}
 	g->xScale = (g->xMax-g->xMin)/g->width;
 	g->yScale = (g->yMax-g->yMin)/g->height;
 }
