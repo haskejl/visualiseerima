@@ -60,7 +60,11 @@ int main(int argc, char* argv[]) {
 			writeLines("test.csv", pY, pX[1], nLines);
 		}
 		else if(strcmp(cmd, "generate") == 0) {
-			float slope = (float)rand()/(float)RAND_MAX * 2.f;
+			float posneg = rand() % 1;
+			if(posneg == 0.0) {
+				posneg = -1.0;
+			}
+			float slope = posneg*(float)rand()/(float)RAND_MAX * 2.f;
 			float yInt = rand() % 10;
 			for(int i=0; i<nLines; i++) {
 				pXSLR[i] = pX[i][1] = (float)(rand()%95) +
@@ -75,6 +79,41 @@ int main(int argc, char* argv[]) {
 			olsLinearRegression(pX, pY, n, p, pBeta);
 			simpleLinearRegression(gd.pX, gd.pY, nLines, &gd.beta, &gd.alpha);
 			gd.hasLRModel = true;
+		}
+		else if(strcmp(cmd, "q1") == 0) {
+			gd.g.xMax = 100;
+			gd.g.xMin = -10;
+			gd.g.yMax = 100;
+			gd.g.yMin = -10;
+			recalcGraphParams(&gd.g);
+		}
+		else if(strcmp(cmd, "q2") == 0) {
+			gd.g.xMax = 10;
+			gd.g.xMin = -100;
+			gd.g.yMax = 100;
+			gd.g.yMin = -10;
+			recalcGraphParams(&gd.g);
+		}
+		else if(strcmp(cmd, "q3") == 0) {
+			gd.g.xMax = 10;
+			gd.g.xMin = -100;
+			gd.g.yMax = 10;
+			gd.g.yMin = -100;
+			recalcGraphParams(&gd.g);
+		}
+		else if(strcmp(cmd, "q4") == 0) {
+			gd.g.xMax = 100;
+			gd.g.xMin = -10;
+			gd.g.yMax = 10;
+			gd.g.yMin = -100;
+			recalcGraphParams(&gd.g);
+		}
+		else if(strcmp(cmd, "q1234") == 0) {
+			gd.g.xMax = 100;
+			gd.g.xMin = -100;
+			gd.g.yMax = 100;
+			gd.g.yMin = -100;
+			recalcGraphParams(&gd.g);
 		}
 		else if(strcmp(cmd, "pause") == 0) {
 			gd.pause = true;
