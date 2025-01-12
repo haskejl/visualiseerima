@@ -46,6 +46,29 @@ int graphicsHandler(void *arg) {
 				case SDL_QUIT:
 					gd->quit = true;
 					break;
+				case SDL_KEYDOWN:
+					switch(event.key.keysym.scancode) {
+						case SDL_SCANCODE_LEFT:
+							gd->g.xMin -= 10;
+							gd->g.xMax -=10;
+							recalcGraphParams(&gd->g);
+							break;
+						case SDL_SCANCODE_RIGHT:
+							gd->g.xMin += 10;
+							gd->g.xMax +=10;
+							recalcGraphParams(&gd->g);
+							break;
+						case SDL_SCANCODE_DOWN:
+							gd->g.yMin -= 10;
+							gd->g.yMax -=10;
+							recalcGraphParams(&gd->g);
+							break;
+						case SDL_SCANCODE_UP:
+							gd->g.yMin += 10;
+							gd->g.yMax +=10;
+							recalcGraphParams(&gd->g);
+							break;
+					}
 			}
 		}
 		if(!gd->pause) {
@@ -94,13 +117,15 @@ void drawLinearRegression(struct GraphicsDat *pGD) {
 		}
 	}
 	//Just draw from 0 to the max on the x axis
-	SDL_SetRenderDrawColor(renderer, 255, 100, 100, 255);
-	SDL_RenderDrawLine(renderer, 
-						(int)(pGD->g.xOffset+xLeft/pGD->g.xScale), 
-						(int)(pGD->g.yOffset-yLeft/pGD->g.yScale),
-						(int)(pGD->g.xOffset+xRight/pGD->g.xScale), 
-						(int)(pGD->g.yOffset-yRight/pGD->g.yScale));
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	if(xLeft < pGD->g.xMax && xRight > pGD->g.xMin) {
+		SDL_SetRenderDrawColor(renderer, 255, 100, 100, 255);
+		SDL_RenderDrawLine(renderer, 
+							(int)(pGD->g.xOffset+xLeft/pGD->g.xScale), 
+							(int)(pGD->g.yOffset-yLeft/pGD->g.yScale),
+							(int)(pGD->g.xOffset+xRight/pGD->g.xScale), 
+							(int)(pGD->g.yOffset-yRight/pGD->g.yScale));
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	}
 }
 
 // Graph an object, assumes xMin and yMin are negative
@@ -116,19 +141,26 @@ void drawGraph(const struct Graph g, const float* xVals, const float* yVals, con
 	SDL_RenderFillRect(renderer, &r);
 	SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
 	// X-axis
-	SDL_RenderDrawLine(renderer, g.xPos, g.yOffset, g.xPos+g.width, g.yOffset);
+	if(g.yOffset >= g.yPos && g.yOffset <= g.yPos+g.height) {
+		SDL_RenderDrawLine(renderer, g.xPos, g.yOffset, g.xPos+g.width, g.yOffset);
+	}
 	// Y-axis
-	SDL_RenderDrawLine(renderer, g.xOffset, g.yPos, g.xOffset, g.yPos+g.height);
+	if(g.xOffset >= g.xPos && g.xOffset <= g.xPos+g.width) {
+		SDL_RenderDrawLine(renderer, g.xOffset, g.yPos, g.xOffset, g.yPos+g.height);
+	}
 
 	SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 	r.w = 1;
 	r.h = 1;
 	for(int i=0; i<nVals; i++) {
-		r.x = (int)(g.xOffset+xVals[i]/g.xScale);
-		r.y = (int)(g.yOffset-yVals[i]/g.yScale);
+		if(xVals[i] >= g.xMin && xVals[i] <=g.xMax &&
+			yVals[i] >= g.yMin && yVals[i] <= g.yMax) {
+			r.x = (int)(g.xOffset+xVals[i]/g.xScale);
+			r.y = (int)(g.yOffset-yVals[i]/g.yScale);
 
-		SDL_RenderDrawRect(renderer, &r); 
-		SDL_RenderFillRect(renderer, &r);
+			SDL_RenderDrawRect(renderer, &r); 
+			SDL_RenderFillRect(renderer, &r);
+			}
 	}
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -164,16 +196,8 @@ void drawLineGraph(const struct Graph g, const float* xVals, const float* yVals,
 }
 
 void recalcGraphParams(struct Graph* g) {
-	if(g->xMin < 0) {
-		g->xOffset = g->xPos+(g->xMin/(g->xMin-g->xMax)*g->width);
-	} else {
-		g->xOffset = g->xPos+(g->xMin/(g->xMax-g->xMin)*g->width);
-	}
-	if(g->yMax > 0) {
-		g->yOffset = g->yPos+(g->yMax/(g->yMax-g->yMin)*g->height);
-	} else {
-		g->yOffset = g->yPos+(g->yMax/(g->yMin-g->yMax)*g->height);
-	}
+	g->xOffset = g->xPos+(g->xMin/(g->xMin-g->xMax)*g->width);
+	g->yOffset = g->yPos+(g->yMax/(g->yMax-g->yMin)*g->height);
 	g->xScale = (g->xMax-g->xMin)/g->width;
 	g->yScale = (g->yMax-g->yMin)/g->height;
 }

@@ -60,15 +60,11 @@ int main(int argc, char* argv[]) {
 			writeLines("test.csv", pY, pX[1], nLines);
 		}
 		else if(strcmp(cmd, "generate") == 0) {
-			float posneg = rand() % 1;
-			if(posneg == 0.0) {
-				posneg = -1.0;
-			}
-			float slope = posneg*(float)rand()/(float)RAND_MAX * 2.f;
+			float slope = ((float)rand()/(float)RAND_MAX * 4.0)-2.0;
 			float yInt = rand() % 10;
 			for(int i=0; i<nLines; i++) {
-				pXSLR[i] = pX[i][1] = (float)(rand()%95) +
-				 ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
+				pXSLR[i] = pX[i][1] = ((float)(rand()%200) +
+				 ((float)rand()/(float)RAND_MAX - 0.5)*10.0)-100;
 				pY[i] = yInt + slope * pX[i][1] + ((float)rand()/(float)RAND_MAX - 0.5)*10.0;
 				if(pY[i] > 100) i--;
 			}
