@@ -47,6 +47,7 @@ int main(int argc, char* argv[]) {
 	gd.beta = 0.0;
 	gd.alpha = 0.0;
 	gd.hasLRModel = false;
+	gd.nVals = nLines;
 
 	recalcGraphParams(&gd.g);
 

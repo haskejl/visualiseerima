@@ -9,4 +9,6 @@
 void simpleLinearRegression(float *pX, float *pY, const int n, float *pBeta, float*pAlpha);
 void olsLinearRegression(float **pX, float *pY, const int n, int p, float *pBeta);
 
+float calculateMSE(float **pX, float **pY, const int n, const int p);
+
 #endif
